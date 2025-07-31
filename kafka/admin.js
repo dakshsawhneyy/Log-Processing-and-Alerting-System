@@ -1,4 +1,4 @@
-const kafka = require('./client')
+const { kafka } = require('./client')
 
 async function init() {
     const admin = kafka.admin();
@@ -19,6 +19,8 @@ async function init() {
 
     // Disconnect Admin
     console.log("Disconnecting Admin.......")
-    await admin.disconnect()
+    await admin.disconnect();
     console.log("Disconnected Admin 🏁")
 }
+
+init()
