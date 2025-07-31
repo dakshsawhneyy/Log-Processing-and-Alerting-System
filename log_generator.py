@@ -27,12 +27,11 @@ log_levels = ['INFO', 'ERROR', 'WARNING']       # if use logging, then logging.I
 def generate_logs():
     log = {
         "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
-        "log_level": random.choice(log_services),
-        "log_service": random.choice(log_services),
-        'log_message': random.choice(log_messages)
+        "service": random.choice(log_services),
+        "level": random.choice(log_levels),
+        'message': random.choice(log_messages)
     }
     return log
-    
 
         
 if __name__ == "__main__":
