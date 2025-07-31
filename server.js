@@ -1,9 +1,19 @@
-const express = require('express')
+const express = require('express');
+const sendLogToKafka = require('./log_producer');
 
-const app = express()
+const app = express();
 
-app.use('/log', (req, res) => {
-    
+// node js handles /log request
+// this recieves the data from api parses it and send it to kafka, acts as middleware
+app.use('/log', async(req, res) => {    // this middleware parses incoming JSON into req.body
+    const logData = req.body;
+    try {
+        await sendLogToKafka(logData);
+        res.status(200).json({message: 'Log data sent to Kafka successfully'});
+    } catch (error) {
+        console.error('Error sending log data to Kafka:', error);
+        res.status(500).json({message: 'Failed to send log data to Kafka'});
+    }
 })
 
 app.listen(9000, () => {
