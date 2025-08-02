@@ -21,7 +21,7 @@ log_messages = [
 
 # Creating a list of log levels and log-services
 log_services = ["auth-service", "user-service", "payment-service", "inventory-service"]
-log_levels = ['INFO', 'ERROR', 'WARNING']       # if use logging, then logging.INFO
+log_levels = ['INFO', 'ERROR', 'WARNING', 'CRITICAL']       # if use logging, then logging.INFO
 
 # Creating a function that specifies the log syntax and returns log when this fxn is called
 def generate_logs():
