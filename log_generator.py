@@ -44,5 +44,4 @@ if __name__ == "__main__":
             print(f"[Error] Failed to send log: {log}")
         
         # Sleep for 1 to 3 seconds
-        time.sleep(random.uniform(1, 3))    
-    
+        time.sleep(random.uniform(1, 3))      
