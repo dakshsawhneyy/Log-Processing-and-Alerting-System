@@ -1,4 +1,6 @@
+const { json } = require('express');
 const { kafka } = require('./kafka/client')
+// const redis = require('./Redis/client')
 
 const { Pool } = require('pg')
 
@@ -23,27 +25,29 @@ async function run_consumer(){
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             const log = JSON.parse(message.value.toString())    // parsing message and converting it to string
-            console.log('Recieved LOG', log)
+            // console.log('Recieved LOG', log)
+
+            // Insert into DB, if level is ERROR or CRITICAL
+            try {
+                if (log['level'] == 'ERROR' || log['level'] == 'CRITICAL'){
+                    console.log('Inserting log into Redis ...');
+                    // await pool.query(
+                    //     'INSERT INTO logs (created_at, level, message) VALUES ($1, $2, $3)',
+                    //     [log['timestamp'], log['level'], log['message']]
+                    // )
+
+                    // ! push into Redis and remember redis stores only strings
+                    await redis.lpush('alerts', JSON.stringify(log));   // push into Redis Queue naming alerts
+                    console.log('Log inserted into Redis successfully😈😈')
+                }else{
+                    console.log('Log level is not ERROR or CRITICAL, skipping database insertion.')
+                }
+            } catch (error) {
+                console.error('Error inserting log into database:', error.message)
+                throw new Error('Database insertion failed')
+            }
         }
     })
-
-    // Insert into DB, if level is ERROR or CRITICAL
-    try {
-        if (log_message['level'] == 'ERROR' || log_message['level'] == 'CRITICAL'){
-            console.log('Inserting log into database ...');
-            await pool.query(
-                'INSERT INTO logs (created_at, level, message) VALUES ($1, $2, $3)',
-                [log_message['timestamp'], log_message['level'], log_message['message']]
-            )
-            console.log('Log inserted into database successfully😈😈')
-        }else{
-            console.log('Log level is not ERROR or CRITICAL, skipping database insertion.')
-        }
-    } catch (error) {
-        console.error('Error inserting log into database:', error.message)
-        throw new Error('Database insertion failed')
-    }
-   
 }
 
 run_consumer()
