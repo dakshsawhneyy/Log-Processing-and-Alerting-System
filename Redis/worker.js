@@ -1,6 +1,7 @@
 // This worker runs infinitely and if anything comes in queue, it starts processing it
 const redis = require('./client')
-const push_data_into_postgres = require('../postgres_db/push_data_into_postgres')
+const push_data_into_postgres = require('../postgres_db/push_data_into_postgres');
+const { totalLogsStoredInDB } = require('../metrics/metrics');
 
 async function startWorker() {
     console.log('Worker Started....')
@@ -21,6 +22,7 @@ async function startWorker() {
                 push_data_into_postgres(parsed_alert)
 
                 console.log('Alert inserted into database successfully')
+                totalLogsStoredInDB.inc();  // increment metic of log added to DB
             }else{
                 // If alert is not there, take a breath for 2 seconds, and again check for data
                 await new Promise((res) => setTimeout(res, 1000))   // sleep for 1 second
