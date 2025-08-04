@@ -2,7 +2,8 @@ const { json } = require('express');
 const { kafka } = require('./kafka/client')
 const redis = require('./Redis/client')
 
-const { Pool } = require('pg')
+const { Pool } = require('pg');
+const { totalLogsStoredInRedis, totalLogsRejected } = require('./metrics/metrics');
 
 // Setup PostgreSQL connection
 const pool = new Pool({
@@ -24,7 +25,7 @@ async function run_consumer(){
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            const log = JSON.parse(message.value.toString())    // parsing message and converting it to string
+            const log = JSON.parse(message.value.toString())    // parsing message and converting it to JSON Object from JSON String
             // console.log('Recieved LOG', log)
 
             // Insert into DB, if level is ERROR or CRITICAL
@@ -39,7 +40,9 @@ async function run_consumer(){
                     // ! push into Redis and remember redis stores only strings
                     await redis.lpush('alerts', JSON.stringify(log));   // push into Redis Queue naming alerts
                     console.log('Log inserted into Redis successfully😈😈')
+                    totalLogsStoredInRedis.inc()    // increment metric of log added to Redis
                 }else{
+                    totalLogsRejected.inc()     // increment metric of log rejected i.e. not sent to redis
                     console.log('Log level is not ERROR or CRITICAL, skipping database insertion.')
                 }
             } catch (error) {
