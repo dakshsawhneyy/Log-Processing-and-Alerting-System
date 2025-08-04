@@ -13,13 +13,12 @@ const pool = new Pool({
 async function push_data_into_postgres(log_message) {
     try {
         const result = await pool.query(
-            'INSERT INTO logs (created_at, level, message) VALUES($1, $2, $2)',
+            'INSERT INTO logs (created_at, level, message) VALUES($1, $2, $3)',
             [log_message['timestamp'], log_message['level'], log_message['message']]
         )
-        console.log('Data inserted successfully:', result.rowCount)
+        console.log('Data inserted successfully')
     } catch (error) {
-        console.error('Error retrieving data from database:', error.message)
-        throw new Error('Database retrieval failed')
+        console.error('Error sending data to database:', error.message)
     }
 }
 

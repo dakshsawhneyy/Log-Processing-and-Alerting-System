@@ -1,6 +1,6 @@
 const { json } = require('express');
 const { kafka } = require('./kafka/client')
-// const redis = require('./Redis/client')
+const redis = require('./Redis/client')
 
 const { Pool } = require('pg')
 
