@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 5    # scrape metrics every 5 seconds
+
+
+scrape_configs:
+  - job_name: 'log-processing-app'  # used for grouping in UI of prom
+    static_configs:
+      - targets: ['host.docker.internal:9000']  # This tells Prometheus where to look for metrics.
+
+# host.docker.internal is a special hostname that lets a Docker container access the host machine
