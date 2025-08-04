@@ -1,4 +1,5 @@
-const { kafka } = require('./kafka/client')
+const { kafka } = require('./kafka/client');
+const { totalLogsRecieved } = require('./metrics/metrics');
 
 // creating function that:  [this fxn is called in server.js when taking log data as input]
 // -> takes log_message as input and sends it to kafka topic
@@ -19,6 +20,9 @@ async function sendLogToKafka(log_message){
             }
         ]
     })
+
+    totalLogsRecieved.inc()     // increment the count of recieved log message 
+    
     console.log('Message sent to topic [log-processing] successfully ')
     
     // disconnect producer
