@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - prometheus-storage:/etc/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - log_processing_network
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - log_processing_network
+
+volumes:
+  prometheus-storage:
+  grafana-storage:
+  
+networks:
+  log_processing_network:
