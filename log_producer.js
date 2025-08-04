@@ -15,7 +15,7 @@ async function sendLogToKafka(log_message){
         topic: 'log-processing',
         messages: [
             {
-                value: JSON.stringify(log_message)
+                value: JSON.stringify(log_message)  // convert json object into jsong string
             }
         ]
     })

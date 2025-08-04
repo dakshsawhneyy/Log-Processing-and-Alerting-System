@@ -24,7 +24,7 @@ async function run_consumer(){
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            const log = JSON.parse(message.value.toString())    // parsing message and converting it to string
+            const log = JSON.parse(message.value.toString())    // parsing message and converting it to JSON Object from JSON String
             // console.log('Recieved LOG', log)
 
             // Insert into DB, if level is ERROR or CRITICAL
