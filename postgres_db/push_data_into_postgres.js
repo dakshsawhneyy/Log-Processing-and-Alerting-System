@@ -16,6 +16,7 @@ async function push_data_into_postgres(log_message) {
             'INSERT INTO logs (created_at, level, message) VALUES($1, $2, $2)',
             [log_message['timestamp'], log_message['level'], log_message['message']]
         )
+        console.log('Data inserted successfully:', result.rowCount)
     } catch (error) {
         console.error('Error retrieving data from database:', error.message)
         throw new Error('Database retrieval failed')
