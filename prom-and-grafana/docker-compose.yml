@@ -5,7 +5,7 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - prometheus-storage:/etc/prometheus
+      - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
@@ -21,8 +21,7 @@ services:
       - log_processing_network
 
 volumes:
-  prometheus-storage:
   grafana-storage:
-  
+
 networks:
   log_processing_network:
